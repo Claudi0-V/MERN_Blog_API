@@ -3,6 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 const app = express();
+const authenticationRouter = require("./routes/authentication.js");
+
 const dbURI = process.env.MONGO_DB_URI;
 mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -10,6 +12,7 @@ mongoose
   .catch();
 
 app.use(express.json());
+app.use(authenticationRouter)
 
 
 

@@ -12,11 +12,18 @@ module.exports.jwt_auth = (req, res, next) => {
           res.status(401).json({err: "user not found"})
         }
         req.user = user;
-        req.isAdmin = user.isAdmin
         next();
       });
     }
   } catch (err) {
     res.status(400).json({ err: "something happend" });
+  }
+}
+
+module.exports.isAdmin = (req, res, next) => {
+  if (req.user.isAdmin) {
+    next()
+  } else {
+    res.status(401).json({ err: "User not authorized" });
   }
 }

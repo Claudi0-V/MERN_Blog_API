@@ -15,7 +15,7 @@ const userSchema = new Schema({
   hashedPassword: {
     type: String,
     required: true
-  }
+  },
   isAdmin: {
     type: Boolean,
     default: false

@@ -19,7 +19,7 @@ router.post("/", jwt_auth, isAdmin, async (req, res) => {
 
 router.delete("/", jwt_auth, isAdmin, async (req, res) => {
   const { user } = req;
-  const _id = req.body;
+  const { _id } = req.body;
   try {
     const blog = await Blog.findByIdAndDelete(_id);
     res.status(200).json({ sucess: "Blog post deleted" });
@@ -32,8 +32,8 @@ router.put("/", jwt_auth, isAdmin, async (req, res) => {
   const { user } = req;
   const { _id, post } = req.body;
   try {
-    const blog = await Blog.findByIdAndUpdate({ _id }, post );
-    res.status(201).json({ sucess: "Blog succefuly updated", blog });
+    const blog = await Blog.findByIdAndUpdate({ _id }, post);
+    res.status(201).json({ sucess: "Blog succefuly updated" });
   } catch (err) {
     res.status(401).json({ err: "Blog with this ID was not found" });
   }

@@ -10,7 +10,6 @@ router.get("/", async (req, res) => {
       path: "user",
       select: "username",
     });
-    console.log(comments);
     res.status(200).json({ comments });
   } catch (err) {
     console.log(err);
@@ -19,7 +18,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", jwt_auth, async (req, res) => {
   const { text } = req.body;
-  const blogID = new mongoose.Types.ObjectId(req.body.blogID);
+  const blogID = req.body.blogID;
   const user = req.user._id;
   try {
     const comment = new Comment({ text, user, blogID });
@@ -35,11 +34,17 @@ router.put("/", jwt_auth, async (req, res) => {
   const { user } = req;
   const { _id, newVersion } = req.body;
   try {
-    const updatedComment = await Comment.findByIdAndUpdate(
-      { _id },
-      { newVersion }
-    );
-    res.status(201).json({ sucess: "Comment succefuly updated" });
+    const comment = await Comment.findOne({ _id });
+    const isUserComment = comment.user.equals(user._id);
+    if (isUserComment) {
+      const updatedComment = await Comment.findByIdAndUpdate(
+        { _id },
+        { newVersion }
+      );
+      res.status(201).json({ sucess: "Comment succefuly updated" });
+    } else {
+      res.status(200).json({ err: "user don't match" });
+    }
   } catch (err) {
     res.status(401).json("Failed to Update the comment");
   }
@@ -49,10 +54,17 @@ router.delete("/", jwt_auth, async (req, res) => {
   const { user } = req;
   const { _id } = req.body;
   try {
-    const blog = await User.findByIdAndDelete(_id);
-    res.status(200).json({ sucess: "Blog post deleted" });
+    const comment = await Comment.findOne({ _id });
+    const isUserComment = comment.user.equals(user._id);
+    if (isUserComment) {
+      await Comment.findByIdAndDelete({ _id });
+      res.status(200).json({ sucess: "Comment post deleted" });
+    } else {
+      res.status(200).json({ err: "user don't match" });
+    }
   } catch (err) {
-    res.status(401).json({ err: "Blog with this ID was not found" });
+    console.log(err);
+    res.status(401).json({ err: "Comment with this ID was not found" });
   }
 });
 

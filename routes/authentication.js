@@ -54,4 +54,9 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/logout", (req, res) => {
+  res.cookie("jwt", '', {maxAge: 1});
+  res.status(200).json({succes: "User is not logged in anymore"})
+})
+
 module.exports = router;

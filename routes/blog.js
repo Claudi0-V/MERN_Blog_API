@@ -3,7 +3,7 @@ const Blog = require("../models/blogs.js");
 const User = require("../models/user.js");
 const { jwt_auth, isAdmin } = require("../middleware/auth.js");
 
-router.get("/", async (req, res) => {
+router.get("/all-entries", async (req, res) => {
   const blogs = await Blog.find();
   if (blogs.length > 0) res.status(200).json(blogs);
   else res.status(200).json({ err: "there's no blogs currently" });

@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const app = express();
 const authenticationRouter = require("./routes/authentication.js");
@@ -14,6 +15,7 @@ mongoose
   .then(() => console.log("success"))
   .catch();
 
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use("/user", authenticationRouter);

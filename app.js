@@ -22,4 +22,8 @@ app.use("/user", authenticationRouter);
 app.use("/blog", blogRouter);
 app.use("/comments", commentsRouter);
 
+app.use((err, req, res, next) => {
+  res.status(500).json({ err: err });
+});
+
 app.listen(process.env.PORT || 5000);

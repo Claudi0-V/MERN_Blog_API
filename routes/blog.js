@@ -9,6 +9,20 @@ router.get("/", async (req, res) => {
   else res.status(200).json({ err: "there's no blogs currently" });
 });
 
+router.get("/single-entry", async (req, res) => {
+  try {
+    const { _id } = req.body;
+    const blog = await Blog.findById(_id);
+    if (blog) {
+      res.status(201).json({blog})
+    } else {
+    res.status(401).json({ err: "Blog with this ID was not found" });
+    }
+  } catch (err) {
+    console.log(err)
+  }
+});
+
 router.post("/", jwt_auth, isAdmin, async (req, res) => {
   const { user, isAdmin } = req;
   const { title, body } = req.body;

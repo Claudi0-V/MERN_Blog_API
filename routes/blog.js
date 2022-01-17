@@ -4,9 +4,20 @@ const User = require("../models/user.js");
 const { jwt_auth, isAdmin } = require("../middleware/auth.js");
 
 router.get("/all-entries", async (req, res) => {
-  const blogs = await Blog.find();
-  if (blogs.length > 0) res.status(200).json(blogs);
-  else res.status(200).json({ err: "there's no blogs currently" });
+  const { page = 1, limit = 10 } = req.query;
+  const blogs = await Blog.find()
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
+  const totalBlogs = await Blog.countDocuments();
+  if (blogs.length > 0) {
+    res.status(200).json({
+      blogs,
+      totalBlogs
+    });
+  } else {
+    res.status(200).json({ err: "there's no blogs currently" });
+  }
 });
 
 router.get("/single-entry", async (req, res) => {
@@ -14,12 +25,12 @@ router.get("/single-entry", async (req, res) => {
     const { _id } = req.body;
     const blog = await Blog.findById(_id);
     if (blog) {
-      res.status(201).json({blog})
+      res.status(201).json({ blog });
     } else {
-    res.status(401).json({ err: "Blog with this ID was not found" });
+      res.status(401).json({ err: "Blog with this ID was not found" });
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 });
 

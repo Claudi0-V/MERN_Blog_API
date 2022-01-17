@@ -6,10 +6,6 @@ const User = require("../models/user.js");
 
 const maxAge = 3 * 24 * 60 * 60;
 
-router.get("/login", (req, res) => {
-  res.status(200).json({ it: "works" });
-});
-
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET_KEY, {
     expiresIn: maxAge,
